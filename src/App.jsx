@@ -1,35 +1,40 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect } from "react";
+import AppLayout from "./layout/AppLayout";
+// import Dashboard from "./pages/Dashboard";
+import { useAppStore } from "./store/useAppStore";
+import Today from "./pages/Today";
+import Upcoming from "./pages/Upcoming";
+import ProjectView from "./pages/ProjectView";
+import Inbox from "./pages/Inbox";
+import { Route, Routes } from "react-router-dom";
+import LabelView from "./pages/LabelView";
 
-function App() {
-  const [count, setCount] = useState(0)
+function DarkModeWatcher() {
+  const dark = useAppStore((s) => s.darkMode);
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", dark);
+  }, [dark]);
+
+  return null;
 }
 
-export default App
+export default function App() {
+  return (
+    <>
+      <DarkModeWatcher />
+      {/* <AppLayout>
+        <Dashboard />
+      </AppLayout> */}
+      <AppLayout>
+        <Routes>
+          <Route path="/" element={<Inbox />} />
+          <Route path="/today" element={<Today />} />
+          <Route path="/upcoming" element={<Upcoming />} />
+          <Route path="/label/:labelId" element={<LabelView />} />
+          <Route path="/project/:projectId" element={<ProjectView />} />
+        </Routes>
+      </AppLayout>
+    </>
+  );
+}
