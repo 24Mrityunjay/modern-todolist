@@ -1,4 +1,9 @@
-import { InboxIcon, CalendarIcon, SunIcon } from "@heroicons/react/24/outline";
+import {
+  InboxIcon,
+  CalendarDaysIcon,
+  CalendarIcon,
+  SunIcon,
+} from "@heroicons/react/24/outline";
 import { useAppStore } from "../../store/useAppStore";
 import ProjectsList from "./ProjectsList";
 import { NavLink } from "react-router-dom";
@@ -30,7 +35,7 @@ export default function Sidebar() {
             }`
           }
         >
-          <CalendarIcon className="w-5 h-5" />
+        <CalendarDaysIcon className="w-5 h-5" />
           <span>Calendar</span>
         </NavLink>
 
