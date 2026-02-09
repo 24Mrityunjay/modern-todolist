@@ -3,7 +3,8 @@ import Topbar from "../topbar/Topbar";
 
 export default function AppLayout({ children }) {
   return (
-    <div className="flex h-screen bg-white dark:bg-[#1f1f1f]">
+    <div className="flex h-screen bg-gray-100 dark:bg-[#181818] text-gray-900 dark:text-gray-100">
+
       {/* LEFT SIDEBAR */}
       <Sidebar />
 

@@ -21,6 +21,8 @@
     "dayjs": "^1.11.19",
     "nanoid": "^5.1.6",
     "react": "^19.2.0",
+    "react-big-calendar": "^1.19.4",
+    "react-day-picker": "^9.13.0",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.13.0",
     "zustand": "^5.0.10"

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAppStore } from "../../store/useAppStore";
 import { parseTaskInput } from "../utils/parseTaskInput";
+import DatePicker from "../ui/DatePicker";
 
 export default function QuickAdd() {
   const [title, setTitle] = useState("");
@@ -22,7 +23,8 @@ export default function QuickAdd() {
       sectionId || null,
       parsed.dueDate || dueDate || null,
       parsed.priority || priority,
-      parsed.labels.length ? parsed.labels : selectedLabels
+      parsed.labels.length ? parsed.labels : selectedLabels,
+      parsed.recurrence // NEW
     );
 
     setTitle("");
@@ -38,24 +40,30 @@ export default function QuickAdd() {
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Add a task..."
-        className="w-full bg-[#1e1e1e] border border-gray-700 rounded px-3 py-2"
+        className="w-full bg-white dark:bg-[#1e1e1e] border border-gray-300 dark:border-gray-700 rounded px-3 py-2"
         onKeyDown={(e) => e.key === "Enter" && handleAdd()}
       />
 
       {projectSections.length > 0 && (
-        <input
-          type="date"
-          value={dueDate}
-          onChange={(e) => setDueDate(e.target.value)}
-          className="w-full bg-[#1e1e1e] border border-gray-700 rounded px-3 py-2 text-sm"
-        />
-
+        // <input
+        //   type="date"
+        //   value={dueDate}
+        //   onChange={(e) => setDueDate(e.target.value)}
+        //   className="w-full bg-white dark:bg-[#1e1e1e] border border-gray-300 dark:border-gray-700 rounded px-3 py-2 text-sm"
+        // />
+        <DatePicker value={dueDate} onChange={(date) => {
+          const d = new Date(date);
+          const year = d.getFullYear();
+          const month = String(d.getMonth() + 1).padStart(2, "0");
+          const day = String(d.getDate()).padStart(2, "0");
+          setDueDate(`${year}-${month}-${day}`);
+        }} />
       )}
 
       <select
         value={priority}
         onChange={(e) => setPriority(Number(e.target.value))}
-        className="w-full bg-[#1e1e1e] border border-gray-700 rounded px-3 py-2 text-sm"
+        className="w-full bg-white dark:bg-[#1e1e1e] border border-gray-300 dark:border-gray-700 rounded px-3 py-2 text-sm"
       >
         <option value={1}>🔴 Priority 1</option>
         <option value={2}>🟠 Priority 2</option>
@@ -75,10 +83,10 @@ export default function QuickAdd() {
                   : [...prev, label.id]
               )
             }
-            className={`px-2 py-1 text-xs rounded-full border
+            className={`cursor-pointer px-2 py-1 text-xs rounded-full border
         ${selectedLabels.includes(label.id)
                 ? "bg-gray-700 border-gray-500"
-                : "border-gray-700"
+                : "border-gray-300 dark:border-gray-700"
               }`}
           >
             #{label.name}
@@ -88,7 +96,7 @@ export default function QuickAdd() {
 
       <button
         onClick={handleAdd}
-        className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded text-white"
+        className="cursor-pointer bg-gray-500 hover:bg-gray-600 px-4 py-2 rounded text-white"
       >
         Add Task
       </button>

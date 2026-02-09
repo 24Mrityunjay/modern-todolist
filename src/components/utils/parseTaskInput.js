@@ -37,10 +37,25 @@ export function parseTaskInput(text) {
 
         taskText = (before + after).trim();
     }
+
+    let recurrence = null;
+
+    if (/every day/i.test(text)) recurrence = "daily";
+    else if (/every week/i.test(text)) recurrence = "weekly";
+    else if (/every month/i.test(text)) recurrence = "monthly";
+    else {
+        const dayMatch = text.match(/every (monday|tuesday|wednesday|thursday|friday|saturday|sunday)/i);
+        if (dayMatch) recurrence = dayMatch[1].toLowerCase();
+    }
+
+    // remove recurring text from title
+    taskText = taskText.replace(/every\s+\w+/i, "");
+
     return {
         title: taskText.trim(),
         priority,
         labels,
         dueDate, // "2026-02-02"
+        recurrence
     };
 }

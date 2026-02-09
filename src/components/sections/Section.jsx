@@ -9,13 +9,19 @@ export default function Section({ section }) {
   const { setNodeRef } = useDroppable({ id: section.id });
 
   const allTasks = useAppStore((s) => s.tasks);
-  const tasks = useMemo(() => {
+//   const tasks = useMemo(() => {
+//   return sortTasksSmart(
+//     allTasks.filter((t) => t.sectionId === section.id)
+//   );
+// }, [allTasks, section.id]);
+
+  const sortedTasks = useMemo(() => {
   return sortTasksSmart(
     allTasks.filter((t) => t.sectionId === section.id)
   );
 }, [allTasks, section.id]);
 
-  const taskIds = tasks.map((t) => t.id);
+const taskIds = sortedTasks.map((t) => t.id);
   return (
     <div ref={setNodeRef} className="mt-6 min-h-[40px]">
       <h2 className="text-sm font-semibold text-gray-400 mb-2">
@@ -23,11 +29,9 @@ export default function Section({ section }) {
       </h2>
 
       <SortableContext items={taskIds} strategy={verticalListSortingStrategy}>
-        <div className="space-y-1">
-          {tasks.map((task) => (
-            <DraggableTask key={task.id} task={task} />
-          ))}
-        </div>
+        {sortedTasks.map((task) => (
+          <DraggableTask key={task.id} task={task} />
+        ))}
       </SortableContext>
     </div>
   );

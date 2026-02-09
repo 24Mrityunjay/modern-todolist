@@ -1,8 +1,18 @@
 import { useAppStore } from "../../store/useAppStore";
 import { getDueDateStatus } from "../utils/dateUtils";
+import { ArrowPathIcon } from "@heroicons/react/24/outline";
 
 export default function TaskItem({ task }) {
   const toggleTask = useAppStore((s) => s.toggleTask);
+  const setSelectedTask = useAppStore((s) => s.setSelectedTask);
+
+const totalSubtasks = task.subtasks?.length || 0;
+const completedSubtasks =
+  task.subtasks?.filter((s) => s.completed).length || 0;
+
+const progress =
+  totalSubtasks > 0 ? (completedSubtasks / totalSubtasks) * 100 : 0;
+
   const priorityStyles = {
     1: "border-red-500 checked:bg-red-500 checked:border-red-500",
     2: "border-orange-400 checked:bg-orange-500 checked:border-orange-500",
@@ -35,8 +45,22 @@ const formattedDate =
 
     const isOverdue = getDueDateStatus(task.dueDate) === "overdue";
 
+  const recurrenceTextMap = {
+    daily: "every day",
+    weekly: "every week",
+    monthly: "every month",
+    monday: "every Monday",
+    tuesday: "every Tuesday",
+    wednesday: "every Wednesday",
+    thursday: "every Thursday",
+    friday: "every Friday",
+    saturday: "every Saturday",
+    sunday: "every Sunday",
+  };
   return (
-    <div className={`flex items-center gap-3 py-3 border-b border-gray-800 group hover:bg-[#1a1a1a] px-2 rounded transition ${isOverdue ? "border-l-2 border-red-500 pl-2" : ""}`}>
+    <div 
+ className={`cursor-pointer flex items-center gap-3 py-3 border-b border-gray-800 group hover:bg-gray-200 dark:hover:bg-gray-600 px-2 rounded transition ${isOverdue ? "border-l-2 border-red-500 pl-2" : ""}`}>
+      
       <div className="relative w-5 h-5 shrink-0">
 
         <input
@@ -78,11 +102,40 @@ const formattedDate =
       </div>
 
       <span
+      onClick={() => setSelectedTask(task.id)}
         className={`flex-1 ${task.completed ? "line-through text-gray-500" : ""
           }`}
       >
         {task.title}
       </span>
+
+      {totalSubtasks > 0 && (
+  <div className="mt-1">
+    <div className="w-full h-1.5 bg-gray-700 rounded">
+      <div
+        className="h-1.5 bg-green-500 rounded transition-all duration-300"
+        style={{ width: `${progress}%` }}
+      />
+    </div>
+    <div className="text-[10px] text-gray-400 mt-0.5">
+      {completedSubtasks}/{totalSubtasks} subtasks
+    </div>
+  </div>
+)}
+
+       {/* {task.recurrence && (
+    <ArrowPathIcon
+      className="w-4 h-4 text-gray-400"
+      title={`Repeats ${task.recurrence}`}
+    />
+  )} */}
+  
+      {task.recurrence && (
+        <ArrowPathIcon
+          className="w-4 h-4 text-gray-400"
+          title={`Repeats ${recurrenceTextMap[task.recurrence]}`}
+        />
+      )}
       {task.priority <= 4 && (
         <div className="text-xs text-gray-400">
           Priority {task.priority}
@@ -99,7 +152,7 @@ const formattedDate =
           {taskLabels.map((label) => (
             <span
               key={label.id}
-              className="text-xs px-2 py-0.5 rounded-full bg-gray-700 text-gray-300"
+              className="text-xs px-2 py-0.5 rounded-full bg-gray-700 text-gray-700 dark:text-gray-300"
             >
               #{label.name}
             </span>
@@ -113,11 +166,14 @@ const formattedDate =
       <span
         key={label.id}
         onClick={() => setFilter({ type: "label", value: label.id })}
-        className="text-xs px-2 py-0.5 rounded-full bg-gray-700 text-gray-300 cursor-pointer hover:bg-gray-600"
+        className="
+          text-xs px-2 py-0.5 rounded-full cursor-pointer transition
+          bg-gray-200 text-gray-800 hover:bg-gray-300
+          dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600
+        "
       >
         #{label.name}
       </span>
-
     ))}
   </div>
 )}

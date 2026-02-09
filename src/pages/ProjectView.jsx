@@ -1,7 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useAppStore } from "../store/useAppStore";
-import TaskItem from "../components/tasks/TaskItem";
 import QuickAdd from "../components/tasks/QuickAdd";
 import Section from "../components/sections/Section";
 import { DndContext, closestCenter, useDroppable } from "@dnd-kit/core";
@@ -28,8 +27,13 @@ function InboxDropZone({ tasks }) {
 
 export default function ProjectView() {
   const { projectId } = useParams();
-  const { tasks, sections, setProject } = useAppStore();
-  // const { moveTaskToSection } = useAppStore();
+  const { tasks, sections, setProject, currentFilter, clearFilter, searchQuery } =
+    useAppStore();
+
+  useEffect(() => {
+    setProject(projectId);
+    clearFilter();
+  }, [projectId, setProject, clearFilter]);
 
   function handleDragEnd(event) {
     const { active, over } = event;
@@ -37,8 +41,6 @@ export default function ProjectView() {
 
     const state = useAppStore.getState();
     const tasks = state.tasks;
-
-    // const activeTask = tasks.find((t) => t.id === active.id);
     const overTask = tasks.find((t) => t.id === over.id);
 
     let newSectionId = null;
@@ -56,55 +58,63 @@ export default function ProjectView() {
     state.reorderTask(active.id, over.id, newSectionId);
   }
 
+  // 🧠 BASE PROJECT TASKS
+  let projectTasks = tasks.filter((t) => t.projectId === projectId);
 
-const clearFilter = useAppStore((s) => s.clearFilter);
+  // 🎯 FILTERS (label, priority, today)
+  if (currentFilter) {
+    if (currentFilter.type === "label") {
+      projectTasks = projectTasks.filter((t) =>
+        t.labels?.includes(currentFilter.value)
+      );
+    }
 
-useEffect(() => {
-  setProject(projectId);
-  clearFilter(); // 💥 THIS FIXES YOUR ISSUE
-}, [projectId, setProject, clearFilter]);
+    if (currentFilter.type === "priority") {
+      projectTasks = projectTasks.filter(
+        (t) => t.priority === currentFilter.value
+      );
+    }
 
-const { currentFilter } = useAppStore();
+    if (currentFilter.type === "today") {
+      const today = new Date().toISOString().split("T")[0];
+      projectTasks = projectTasks.filter((t) => t.dueDate === today);
+    }
+  }
 
-let projectTasks = tasks.filter((t) => t.projectId === projectId);
-
-if (currentFilter) {
-  if (currentFilter.type === "label") {
+  // 🔎 SEARCH FILTER
+  if (searchQuery.trim()) {
+    const q = searchQuery.toLowerCase();
     projectTasks = projectTasks.filter((t) =>
-      t.labels?.includes(currentFilter.value)
+      t.title.toLowerCase().includes(q)
     );
   }
 
-  if (currentFilter.type === "priority") {
-    projectTasks = projectTasks.filter(
-      (t) => t.priority === currentFilter.value
-    );
-  }
-
-  if (currentFilter.type === "today") {
-    const today = new Date().toISOString().split("T")[0];
-    projectTasks = projectTasks.filter((t) => t.dueDate === today);
-  }
-}
   const projectSections = sections[projectId] || [];
+
   const unsectioned = sortTasksSmart(
-  projectTasks.filter((t) => !t.sectionId)
-);
+    projectTasks.filter((t) => !t.sectionId)
+  );
 
   return (
-    <>
-      <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-        <h1 className="text-2xl font-semibold mb-4 capitalize">{projectId}</h1>
+    <DndContext
+      collisionDetection={closestCenter}
+      onDragEnd={handleDragEnd}
+      onDragStart={(event) => {
+        const task = event.active.data.current?.task;
+        if (task) {
+          window.setCalendarDraggedTask?.(task);
+        }
+      }}
+    >
+      <h1 className="text-2xl font-semibold mb-4 capitalize">{projectId}</h1>
 
-        <QuickAdd />
+      <QuickAdd />
 
-        <InboxDropZone tasks={unsectioned} />
-        {projectSections.map((section) => (
-          <Section key={section.id} section={section} />
-        ))}
+      <InboxDropZone tasks={unsectioned} />
 
-      </DndContext>
-    </>
-
+      {projectSections.map((section) => (
+        <Section key={section.id} section={section} />
+      ))}
+    </DndContext>
   );
 }

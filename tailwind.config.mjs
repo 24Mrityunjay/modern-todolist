@@ -4,14 +4,11 @@ export default {
   theme: {
     extend: {
       colors: {
-        todoistRed: "#db4c3f",
+        tasklyRed: "#db4c3f",
         sidebar: "#fafafa",
-        darkBg: "#1f1f1f"
+        darkBg: "#1f1f1f",
       },
-      fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"]
-      }
-    }
+    },
   },
-  plugins: []
-}
+  plugins: [],
+};

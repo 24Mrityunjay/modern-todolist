@@ -8,24 +8,38 @@ export default function Sidebar() {
   const setFilter = useAppStore((s) => s.setFilter);
   const clearFilter = useAppStore((s) => s.clearFilter);
   return (
-    <aside className="w-64 shrink-0 bg-sidebar dark:bg-[#181818] border-r dark:border-gray-800 p-4">
-      <h1 className="text-xl font-bold text-todoistRed mb-6">Todoist</h1>
+<aside className="w-64 shrink-0 bg-gray-50 dark:bg-[#181818] border-r border-gray-200 dark:border-gray-800 p-4">
+      <h1 className="text-xl font-bold text-tasklyRed mb-6">Taskly </h1>
 
-      <nav className="space-y-2" > <NavLink
-        to="/"
-        className={({ isActive }) =>
-          `flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-800 ${isActive ? "bg-gray-800" : ""
-          }`
-        }
-      >
-        <InboxIcon className="w-5 h-5" />
-        <span>Inbox</span>
-      </NavLink>
+      <nav className="space-y-2" > 
+        <NavLink
+          to="/"
+          className={({ isActive }) =>
+            `flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 ${isActive ? "bg-gray-300 dark:bg-gray-600" : ""
+            }`
+          }
+        >
+          <InboxIcon className="w-5 h-5" />
+          <span>Inbox</span>
+        </NavLink>
+
+          <NavLink
+          to="/calendar"
+          className={({ isActive }) =>
+            `flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 ${isActive ? "bg-gray-300 dark:bg-gray-600"  : ""
+            }`
+          }
+        >
+          <CalendarIcon className="w-5 h-5" />
+          <span>Calendar</span>
+        </NavLink>
+
+        {/* <NavLink > Calendar</NavLink> */}
 
         <NavLink
           to="/today"
           className={({ isActive }) =>
-            `flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-800 ${isActive ? "bg-gray-800" : ""
+            `flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 ${isActive ? "bg-gray-300 dark:bg-gray-600"  : ""
             }`
           }
         >
@@ -36,7 +50,7 @@ export default function Sidebar() {
         <NavLink
           to="/upcoming"
           className={({ isActive }) =>
-            `flex items-center gap-2 px-3 py-2 rounded ${isActive ? "bg-gray-800" : "hover:bg-gray-800"
+            `flex items-center gap-2 px-3 py-2 rounded ${isActive ? "bg-gray-300 dark:bg-gray-600"  : "hover:bg-gray-200 dark:hover:bg-gray-600"
             }`
           }
         >
@@ -50,20 +64,20 @@ export default function Sidebar() {
       <div className="mt-6">
         <p className="text-xs text-gray-500 mb-2">FILTERS</p>
 
-        <button onClick={clearFilter} className="sidebar-item">
+        <button onClick={clearFilter} className="cursor-pointer w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 ">
           📋 All Tasks
         </button>
 
         <button
           onClick={() => setFilter({ type: "today" })}
-          className="sidebar-item"
+          className="cursor-pointer w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 "
         >
           📅 Today
         </button>
 
         <button
           onClick={() => setFilter({ type: "priority", value: 1 })}
-          className="sidebar-item"
+          className="cursor-pointer w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 "
         >
           🔴 Priority 1
         </button>
@@ -73,7 +87,7 @@ export default function Sidebar() {
           <button
             key={label.id}
             onClick={() => setFilter({ type: "label", value: label.id })}
-            className="sidebar-item"
+            className="cursor-pointer w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 "
           >
             #{label.name}
           </button>
