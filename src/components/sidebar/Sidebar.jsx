@@ -7,14 +7,20 @@ import {
 import { useAppStore } from "../../store/useAppStore";
 import ProjectsList from "./ProjectsList";
 import { NavLink } from "react-router-dom";
+import LightLogo from "../../assets/logolight.png";
+import DarkLogo from "../../assets/logodark.png";
 
 export default function Sidebar() {
   const labels = useAppStore((s) => s.labels);
   const setFilter = useAppStore((s) => s.setFilter);
   const clearFilter = useAppStore((s) => s.clearFilter);
+  const theme = useAppStore((s) => s.theme);
   return (
 <aside className="w-64 shrink-0 bg-gray-50 dark:bg-[#181818] border-r border-gray-200 dark:border-gray-800 p-4">
-      <h1 className="text-xl font-bold text-tasklyRed mb-6">Taskly </h1>
+      <h1 className="text-xl font-bold text-tasklyRed mb-6 flex items-center justify-center">
+        <img src={theme === "dark" ? DarkLogo : LightLogo} width="30px" height="30px" alt="logo" />
+        Taskly
+      </h1>
 
       <nav className="space-y-2" > 
         <NavLink
